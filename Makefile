@@ -39,12 +39,12 @@ build/cforth: $(CFORTH_MODULES:%=build/%.o)
 # обратная косая черта (backslash, \ ) в самом конце строки
 # обозначает перенос строки.
 CFLAGS_COMMON = -MMD  -I./include \
-	-std=c99 -pedantic -Wall -Werror -Wextra -pedantic-errors \
-	-Wpointer-arith -Waggregate-return \
-	-Wstrict-prototypes -Wmissing-declarations \
-	-Wlong-long -Winline -Wredundant-decls \
-	-Wcast-align -Wfloat-equal -D__STRICT_ANSI__ \
-	-Wbad-function-cast
+	# -std=c99 -pedantic -Wall -Werror -Wextra -pedantic-errors \
+	# -Wpointer-arith -Waggregate-return \
+	# -Wstrict-prototypes -Wmissing-declarations \
+	# -Wlong-long -Winline -Wredundant-decls \
+	# -Wcast-align -Wfloat-equal -D__STRICT_ANSI__ \
+	# -Wbad-function-cast
 
 # Про предупреждения можно почитать в руководстве GCC:
 # https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
