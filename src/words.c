@@ -2,10 +2,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 #include "words.h"
 
-static void line_comment(struct forth *forth);
+
+
+
+void comment(struct forth *forth) 
+{
+    int symbol;
+    while((symbol = fgetc(forth->input)) =='\n'&& symbol > 0);
+}
+
+void key_push(struct forth *forth)
+{
+    int symbol;
+    while (symbol = fgetc(forth->input))
+    {
+        if (!isspace(symbol))
+        {
+            forth_push(forth, symbol);
+            return;
+        }
+    }
+}
+
+void blok_comment(struct forth *forth) 
+{
+    int skobki, symbol;
+    skobki = 0;
+    while ((symbol = fgetc(forth->input)) > 0) 
+    {
+        if (symbol == '(') {
+            skobki++;
+        }
+
+         if (symbol == ')') 
+         {
+            skobki--;
+        }
+
+        if (skobki == 0 && symbol == ')') 
+        {
+            break;
+        }
+        
+    }
+}
 
 void words_add(struct forth *forth)
 {
@@ -61,7 +104,13 @@ void words_add(struct forth *forth)
     forth_add_codeword(forth, "find", find);
     forth_add_codeword(forth, ",", comma);
     forth_add_codeword(forth, "next", next);
-    forth_add_codeword(forth, "\\", line_comment);
+    
+
+    forth_add_codeword(forth, "key", key_push);
+    forth_add_codeword(forth, "\\", comment);
+    forth->latest->immediate = true;
+    forth_add_codeword(forth, "(", blok_comment);
+    forth->latest->immediate = true;
 
     status = forth_add_compileword(forth, "square", square);
     assert(!status);
@@ -349,12 +398,4 @@ void interpreter_stub(struct forth *forth)
     (void)forth;
     printf("ERROR: return stack underflow (must exit to interpreter)\n");
     exit(2);
-}
-
-static void line_comment(struct forth *forth)
-{
-    int c = 0;
-    do {
-        c = fgetc(forth->input);
-    } while (c > 0 && c != '\n');
 }

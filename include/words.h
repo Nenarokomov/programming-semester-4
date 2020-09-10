@@ -2,6 +2,10 @@
 
 #include "forth.h"
 
+void key_push(struct forth *forth);
+void blok_comment(struct forth *forth);
+void comment(struct forth *forth);
+
 void words_add(struct forth *forth);
 
 void drop(struct forth *forth);
