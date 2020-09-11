@@ -50,6 +50,8 @@ void blok_comment(struct forth *forth)
     }
 }
 
+int compare (const void*, const void*);
+
 void words_add(struct forth *forth)
 {
     int status = 0;
@@ -112,9 +114,68 @@ void words_add(struct forth *forth)
     forth_add_codeword(forth, "(", blok_comment);
     forth->latest->immediate = true;
 
+    forth_add_codeword(forth, "count", count);
+    forth_add_codeword(forth, "statistics", statistics);
+
     status = forth_add_compileword(forth, "square", square);
     assert(!status);
 }
+
+
+void count(struct forth *forth) 
+{
+    size_t length;
+    char word_tmp[MAX_WORD+1] = {0};
+    if((read_word(forth->input, sizeof(word_tmp), word_tmp, &length)) == FORTH_OK) 
+    {
+        const struct word* word = word_find(forth->latest, length, word_tmp);
+        if(word)
+        {
+            printf("%s\t%d\n", word->name, word->kolichestvo);
+            return;
+        }
+    }
+    printf("Error: Unknown word\n");
+}
+
+struct sort 
+{
+    int count;
+    char name[MAX_WORD + 1];
+};
+
+void statistics(struct forth *forth) 
+{
+    struct word* index = forth->latest;
+    struct sort* array = (struct sort*)malloc((forth->counter)*(sizeof(struct sort)));
+    int i, j;
+    i = 0;
+    j = 0;
+    printf("Stat:\n");
+    while (index) 
+    {
+        memcpy(array[i].name, index->name, index->length);
+        array[i].count = index->kolichestvo;
+        (array[i].name)[index->length] = 0;
+        array[i].count = index->kolichestvo;
+        index = index->next;
+        i++;
+    }
+    qsort(array,(forth->counter), sizeof(struct sort), compare);
+    for (j = 0; j < forth->counter; j++) 
+    {
+        printf("%s\t %d\n", array[j].name, array[j].count);
+    }
+    free(array);
+}
+
+int compare(const void* a, const void* b) 
+{
+    return (*(struct sort*)b).count - (*(struct sort*)a).count;
+}
+
+
+
 
 void drop(struct forth *forth) {
     forth_pop(forth);

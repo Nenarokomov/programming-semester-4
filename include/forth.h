@@ -14,6 +14,7 @@ struct word {
     bool compiled;
     bool hidden;
     bool immediate;
+    int kolichestvo;
     uint8_t length;
     char name[];
 };
@@ -23,6 +24,7 @@ struct forth {
     cell *sp;
     cell *rp;
     cell *memory;
+    int counter;
     struct word *latest;
     struct word *stopword;
     bool is_compiling;
